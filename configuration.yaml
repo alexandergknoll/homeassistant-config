@@ -1,0 +1,89 @@
+homeassistant:
+  name: Home
+  latitude: !secret latitude_home
+  longitude: !secret longitude_home
+  temperature_unit: F
+  time_zone: America/Chicago
+
+frontend:
+updater:
+http:
+  api_password: !secret http_password
+
+history:
+logbook:
+logger:
+discovery:
+sun:
+conversation:
+
+device_tracker:
+  platform: asuswrt
+  host: 192.168.1.1
+  protocol: ssh
+  username: !secret asus_username
+  ssh_key: ~/.ssh/id_rsa
+  track_new_devices: no
+  consider_home: 60
+
+light:
+  platform: hue
+  host: 192.168.1.102
+
+switch:
+  platform: tplink
+  host: 192.168.1.103
+  name: Office Accent Lights
+
+sensor:
+  platform: forecast
+  api_key: !secret forecast_api_key
+  monitored_conditions:
+    - summary
+    - precip_type
+    - temperature
+    - humidity
+
+group:
+  lights:
+    name: Lights
+    entities:
+      - light.living_room_light
+      - light.bedroom_light
+
+automation:
+- alias: Turn on living room lights when sun sets if someone is home
+  trigger:
+    platform: sun
+    event: sunset
+    offset: "-00:45:00"
+  condition:
+    condition: state
+    entity_id: group.all_devices
+    state: home
+  action:
+    service: light.turn_on
+    entity_id: group.living_room
+
+- alias: Turn on living room light if someone arrives at home
+  trigger:
+    platform: state
+    entity_id: group.all_devices
+    from: 'not_home'
+    to: 'home'
+  condition:
+    condition: state
+    entity_id: sun.sun
+    state: 'below_horizon'
+  action:
+    service: light.turn_on
+    entity_id: light.living_room_light
+
+- alias: Turn off all lights if someone leaves and nobody is still home
+  trigger:
+    platform: state
+    entity_id: group.all_devices
+    from: 'home'
+    to: 'not_home'
+  action:
+    service: light.turn_off
