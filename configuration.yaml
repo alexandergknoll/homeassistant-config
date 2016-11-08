@@ -33,7 +33,7 @@ light:
 switch:
   platform: tplink
   host: 192.168.1.103
-  name: Office Accent Lights
+  name: Sun room lamp
 
 sensor:
   platform: forecast
@@ -48,6 +48,7 @@ group:
   lights:
     name: Lights
     entities:
+      - switch.sun_room_light
       - light.living_room_light
       - light.bedroom_light
 
@@ -63,7 +64,7 @@ automation:
     state: home
   action:
     service: light.turn_on
-    entity_id: group.living_room
+    entity_id: light.living_room_light
 
 - alias: Turn on living room light if someone arrives at home
   trigger:
@@ -87,3 +88,4 @@ automation:
     to: 'not_home'
   action:
     service: light.turn_off
+    entity_id: group.all_lights
