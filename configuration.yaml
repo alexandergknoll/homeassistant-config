@@ -36,13 +36,12 @@ switch:
   name: Sun room lamp
 
 sensor:
-  platform: forecast
+  platform: darksky
   api_key: !secret forecast_api_key
   monitored_conditions:
     - summary
     - precip_type
     - temperature
-    - humidity
 
 group:
   lights:
