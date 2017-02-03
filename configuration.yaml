@@ -2,8 +2,15 @@ homeassistant:
   name: Home
   latitude: !secret latitude_home
   longitude: !secret longitude_home
-  temperature_unit: F
+  elevation: !secret elevation_home
+  unit_system: imperial
   time_zone: America/Chicago
+
+  customize:
+    - entity_id: light.living_room_light
+      hidden: true
+    - entity_id: light.bedroom_light
+      hidden: true
 
 frontend:
 updater:
@@ -39,17 +46,9 @@ sensor:
   platform: darksky
   api_key: !secret forecast_api_key
   monitored_conditions:
-    - summary
-    - precip_type
-    - temperature
-
-group:
-  lights:
-    name: Lights
-    entities:
-      - switch.sun_room_light
-      - light.living_room_light
-      - light.bedroom_light
+   - summary
+   - precip_type
+   - temperature
 
 automation:
 - alias: Turn on living room lights when sun sets if someone is home
