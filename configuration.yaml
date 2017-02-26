@@ -7,11 +7,12 @@ homeassistant:
   time_zone: America/Chicago
 
   customize:
-    - entity_id: light.living_room_light
+    light.living_room_light:
       hidden: true
-    - entity_id: light.bedroom_light
+    light.bedroom_light:
       hidden: true
 
+config:
 frontend:
 updater:
 http:
@@ -40,7 +41,7 @@ light:
 switch:
   platform: tplink
   host: 192.168.1.103
-  name: Sun room lamp
+  name: Green room
 
 sensor:
   platform: darksky
